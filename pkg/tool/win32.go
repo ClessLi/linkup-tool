@@ -9,6 +9,15 @@ import (
 	"unsafe"
 )
 
+var ScreenZoomTimes float32 = 1
+
+func init() {
+	desktopHDC := win.GetDC(0)
+	defer win.ReleaseDC(0, desktopHDC)
+	ScreenZoomTimes = (float32(win.GetDeviceCaps(desktopHDC, win.DESKTOPHORZRES))/float32(win.GetSystemMetrics(win.SM_CXSCREEN)) + float32(win.GetDeviceCaps(desktopHDC, win.DESKTOPVERTRES))/float32(win.GetSystemMetrics(win.SM_CYSCREEN))) / 2
+	fmt.Println("屏幕分辨率缩放倍数：", ScreenZoomTimes)
+}
+
 func GetGameWindow(lpWindowName string) win.HWND {
 	windowName, _ := syscall.UTF16PtrFromString(lpWindowName)
 
@@ -37,7 +46,18 @@ func GetWindowPosition(window win.HWND) (x, y int32) {
 }
 
 func TopWindow(window win.HWND) bool {
-	return win.SetForegroundWindow(window)
+	if !win.SetForegroundWindow(window) {
+		return false
+	}
+	tmp := win.GetForegroundWindow()
+	for i := 0; i < 10; i++ {
+		if tmp != window {
+			time.Sleep(20 * time.Millisecond)
+		} else {
+			return true
+		}
+	}
+	return false
 }
 
 func MouseLeftClick(delay int, x, y int32) bool {

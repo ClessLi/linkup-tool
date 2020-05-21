@@ -2,6 +2,7 @@ package test
 
 import (
 	"github.com/ClessLi/linkup-tool/pkg/tool"
+	"github.com/lxn/win"
 	"testing"
 	"time"
 )
@@ -23,4 +24,10 @@ func TestWindowClick(t *testing.T) {
 		t.Log(tool.WindowClick(title, i*100, i*100))
 		time.Sleep(time.Second)
 	}
+}
+
+func TestWindowDPI(t *testing.T) {
+	hdc := win.GetDC(0)
+	defer win.ReleaseDC(0, hdc)
+	t.Log(win.GetSystemMetrics(win.SM_CXSCREEN), win.GetSystemMetrics(win.SM_CYSCREEN), win.GetDeviceCaps(hdc, win.DESKTOPHORZRES), win.GetDeviceCaps(hdc, win.DESKTOPVERTRES))
 }
