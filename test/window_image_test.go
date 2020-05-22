@@ -8,7 +8,8 @@ import (
 )
 
 func TestPrintWindowIMG(t *testing.T) {
-	img, err := tool.GetWindowImage("钉钉")
+	window := tool.GetWindow("钉钉")
+	img, err := tool.GetWindowImage(window)
 	if err != nil {
 		t.Log(err)
 	}

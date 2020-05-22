@@ -9,7 +9,7 @@ import (
 
 func TestTopTaskWindow(t *testing.T) {
 	title := "钉钉"
-	window := tool.GetGameWindow(title)
+	window := tool.GetWindow(title)
 	x, y := tool.GetWindowPosition(window)
 	topRet := tool.TopWindow(window)
 
@@ -19,9 +19,10 @@ func TestTopTaskWindow(t *testing.T) {
 
 func TestWindowClick(t *testing.T) {
 	title := "钉钉"
-	t.Log(tool.WindowClick(title, 200, 200))
+	window := tool.GetWindow(title)
+	t.Log(tool.WindowClick(window, 200, 200))
 	for i := int32(0); i < 10; i++ {
-		t.Log(tool.WindowClick(title, i*100, i*100))
+		t.Log(tool.WindowClick(window, i*100, i*100))
 		time.Sleep(time.Second)
 	}
 }

@@ -18,7 +18,7 @@ func init() {
 	fmt.Println("屏幕分辨率缩放倍数：", ScreenZoomTimes)
 }
 
-func GetGameWindow(lpWindowName string) win.HWND {
+func GetWindow(lpWindowName string) win.HWND {
 	windowName, _ := syscall.UTF16PtrFromString(lpWindowName)
 
 	for i := 0; i < 10; i++ {
@@ -93,4 +93,13 @@ func MouseLeftClick(delay int, x, y int32) bool {
 	time.Sleep(delayTime * time.Millisecond)
 	ret2 := win.SendInput(2, unsafe.Pointer(&click[1]), int32(unsafe.Sizeof(click[1])))
 	return ret1 == 1 && ret2 == 2
+}
+
+func WindowClick(window win.HWND, x, y int32) bool {
+	windowX, windowY := GetWindowPosition(window)
+	if !TopWindow(window) {
+		return false
+	}
+	//time.Sleep(100 * time.Millisecond)
+	return MouseLeftClick(100, windowX+x, windowY+y)
 }
