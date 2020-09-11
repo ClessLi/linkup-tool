@@ -2,39 +2,35 @@ package tool
 
 import (
 	"fmt"
+	"github.com/kbinani/screenshot"
 	"github.com/lxn/win"
+	"image"
 	"math/rand"
 	"syscall"
 	"time"
 	"unsafe"
 )
 
-var ScreenZoomTimes float32 = 1
-
-func init() {
-	desktopHDC := win.GetDC(0)
-	defer win.ReleaseDC(0, desktopHDC)
-	ScreenZoomTimes = (float32(win.GetDeviceCaps(desktopHDC, win.DESKTOPHORZRES))/float32(win.GetSystemMetrics(win.SM_CXSCREEN)) + float32(win.GetDeviceCaps(desktopHDC, win.DESKTOPVERTRES))/float32(win.GetSystemMetrics(win.SM_CYSCREEN))) / 2
-	fmt.Println("屏幕分辨率缩放倍数：", ScreenZoomTimes)
-}
-
-func GetWindow(lpWindowName string) win.HWND {
+func GetWindow(lpWindowName string) {
 	windowName, _ := syscall.UTF16PtrFromString(lpWindowName)
 
 	for i := 0; i < 10; i++ {
-		window := win.FindWindow(nil, windowName)
+		window = win.FindWindow(nil, windowName)
+		// TODO: 捕捉机制待优化
 		if window == win.HWND_TOP {
-			fmt.Println("未搜索到游戏窗口，2秒后重新搜索")
-			time.Sleep(time.Second * 2)
+			if i < 9 {
+				fmt.Println("未搜索到游戏窗口，2秒后重新搜索")
+				time.Sleep(time.Second * 2)
+			}
 		} else {
-			return window
+			fmt.Println("已捕捉到游戏窗口")
+			return
 		}
 	}
-
-	return win.HWND_TOP
+	fmt.Println("未能捕捉到游戏窗口，请确认后，重新启动！")
 }
 
-func GetWindowPosition(window win.HWND) (x, y int32) {
+func GetWindowPosition() (x, y int32) {
 	x = -1
 	y = -1
 	rect := &win.RECT{}
@@ -45,7 +41,21 @@ func GetWindowPosition(window win.HWND) (x, y int32) {
 	return
 }
 
-func TopWindow(window win.HWND) bool {
+func GetWindowImage() (*image.RGBA, error) {
+	TopWindow()
+	winRect := &win.RECT{}
+	if !win.GetWindowRect(window, winRect) {
+		return nil, image.ErrFormat
+	}
+	imgRect := image.Rect(int(float32(winRect.Left)*ScreenZoomTimes), int(float32(winRect.Top)*ScreenZoomTimes), int(float32(winRect.Right)*ScreenZoomTimes), int(float32(winRect.Bottom)*ScreenZoomTimes))
+	img, err := screenshot.CaptureRect(imgRect)
+	if err != nil {
+		return nil, err
+	}
+	return img, nil
+}
+
+func TopWindow() bool {
 	if !win.SetForegroundWindow(window) {
 		return false
 	}
@@ -54,7 +64,8 @@ func TopWindow(window win.HWND) bool {
 		if tmp != window {
 			time.Sleep(20 * time.Millisecond)
 		} else {
-			return true
+			return win.ShowWindow(window, win.SW_SHOWNORMAL)
+			//return true
 		}
 	}
 	return false
@@ -70,9 +81,28 @@ func MouseLeftClick(delay int, x, y int32) bool {
 
 	delayTime := time.Duration(r + delay)
 
-	if !win.SetCursorPos(x, y) {
-		return false
-	}
+	//fmt.Println("鼠标移动到", x, y)
+	//mousePos := &win.POINT{
+	//	X: 0,
+	//	Y: 0,
+	//}
+	//if !win.GetCursorPos(mousePos) {
+	//	return false
+	//}
+	//mousePos.X = int32(float32(mousePos.X) / ScreenZoomTimes)
+	//mousePos.Y = int32(float32(mousePos.Y) / ScreenZoomTimes)
+	//mouseMove := win.MOUSE_INPUT{
+	//	Type: win.INPUT_MOUSE,
+	//	Mi: win.MOUSEINPUT{
+	//		//Dx: (x - mousePos.X) >> 2,
+	//		//Dx: x - mousePos.X,
+	//		//Dx:      x/3,
+	//		//Dy: (y - mousePos.Y) >> 2,
+	//		//Dy: y - mousePos.Y,
+	//		//Dy:      y/3,
+	//		DwFlags: win.MOUSEEVENTF_MOVE,
+	//	},
+	//}
 
 	leftDown := win.MOUSE_INPUT{
 		Type: win.INPUT_MOUSE,
@@ -88,16 +118,25 @@ func MouseLeftClick(delay int, x, y int32) bool {
 		},
 	}
 	click := []win.MOUSE_INPUT{leftDown, leftUp}
+	//move := []win.MOUSE_INPUT{mouseMove}
+	//retMv := win.SendInput(1, unsafe.Pointer(&move[0]), int32(unsafe.Sizeof(move[0])))
+	if !win.SetCursorPos(x, y) {
+		return false
+	}
+	//retMv = win.SendInput(1, unsafe.Pointer(&move[0]), int32(unsafe.Sizeof(move[0])))
 
-	ret1 := win.SendInput(1, unsafe.Pointer(&click[0]), int32(unsafe.Sizeof(click[0])))
+	ret1 := win.SendInput(2, unsafe.Pointer(&click[0]), int32(unsafe.Sizeof(click[0])))
 	time.Sleep(delayTime * time.Millisecond)
 	ret2 := win.SendInput(2, unsafe.Pointer(&click[1]), int32(unsafe.Sizeof(click[1])))
-	return ret1 == 1 && ret2 == 2
+	//return ret1 == 2 && ret2 == 2 && retMv == 1
+	return ret1 == 2 && ret2 == 2
+	//return retMv == 1
 }
 
-func WindowClick(window win.HWND, x, y int32) bool {
-	windowX, windowY := GetWindowPosition(window)
-	if !TopWindow(window) {
+func WindowClick(x, y int32) bool {
+	windowX, windowY := GetWindowPosition()
+	fmt.Println("当前窗口坐标", windowX, windowY)
+	if !TopWindow() {
 		return false
 	}
 	//time.Sleep(100 * time.Millisecond)

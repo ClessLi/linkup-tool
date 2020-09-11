@@ -8,21 +8,22 @@ import (
 )
 
 func TestTopTaskWindow(t *testing.T) {
-	title := "钉钉"
-	window := tool.GetWindow(title)
-	x, y := tool.GetWindowPosition(window)
-	topRet := tool.TopWindow(window)
+	title := "QQ游戏 - 连连看角色版"
+	tool.GetWindow(title)
+	x, y := tool.GetWindowPosition()
+	topRet := tool.TopWindow()
 
 	t.Log(x, y, topRet)
 	t.Log(tool.MouseLeftClick(100, x+100, y+100))
 }
 
 func TestWindowClick(t *testing.T) {
+	//title := "QQ游戏 - 连连看角色版"
 	title := "钉钉"
-	window := tool.GetWindow(title)
-	t.Log(tool.WindowClick(window, 200, 200))
+	tool.GetWindow(title)
+	t.Log(tool.WindowClick(200, 200))
 	for i := int32(0); i < 10; i++ {
-		t.Log(tool.WindowClick(window, i*100, i*100))
+		t.Log(tool.WindowClick(i*100, i*100))
 		time.Sleep(time.Second)
 	}
 }
