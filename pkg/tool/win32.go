@@ -11,10 +11,14 @@ import (
 	"unsafe"
 )
 
-func GetWindow(lpWindowName string) {
+func GetWindow(lpWindowName string) bool {
 	windowName, _ := syscall.UTF16PtrFromString(lpWindowName)
 
 	for i := 0; i < 10; i++ {
+		if IsStopped {
+			fmt.Println("搜索游戏窗口操作已终止！")
+			return false
+		}
 		window = win.FindWindow(nil, windowName)
 		// TODO: 捕捉机制待优化
 		if window == win.HWND_TOP {
@@ -24,10 +28,11 @@ func GetWindow(lpWindowName string) {
 			}
 		} else {
 			fmt.Println("已捕捉到游戏窗口")
-			return
+			return true
 		}
 	}
 	fmt.Println("未能捕捉到游戏窗口，请确认后，重新启动！")
+	return false
 }
 
 func GetWindowPosition() (x, y int32) {

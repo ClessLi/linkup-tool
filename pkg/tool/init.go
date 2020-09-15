@@ -6,6 +6,7 @@ import (
 	"github.com/lxn/win"
 	"image"
 	"image/color"
+	"time"
 )
 
 var (
@@ -21,10 +22,13 @@ var (
 	MarginLeft = 14
 	//MarginHeight   = 226
 	MarginHeight = 181
-	delay        = 200
-	matchedIMGs  []*goimagehash.ImageHash
-	cubeCaches   caches
-	Block        = func() *goimagehash.ImageHash {
+	// 延时参数
+	delay = 300 * time.Millisecond
+	// 延时倍数
+	delayTime   time.Duration = 45
+	matchedIMGs []*goimagehash.ImageHash
+	cubeCaches  caches
+	Block       = func() *goimagehash.ImageHash {
 		//Block          = func() image.Image {
 		rgba := image.NewRGBA(image.Rect(0, 0, cubeWidth-cubeFix*2, cubeHeight-cubeFix*2))
 		for y := 0; y < cubeHeight-cubeFix; y++ {
@@ -44,6 +48,10 @@ var (
 	// win32相关参数
 	window          win.HWND
 	ScreenZoomTimes float32 = 1 // 窗口缩放倍数
+
+	// 控制自动连连看
+	IsPaused  = false
+	IsStopped = false
 )
 
 func init() {

@@ -2,6 +2,14 @@ package tool
 
 type caches [][]vertex
 
+func (c caches) Size() int {
+	size := 0
+	for i := 0; i < len(c); i++ {
+		size += len(c[i])
+	}
+	return size
+}
+
 func (c caches) isEmpty() bool {
 	for i := 0; i < len(c); i++ {
 		if len(c[i]) > 0 {
@@ -108,4 +116,34 @@ func (c caches) isGreatEqual(imgIdx, vertexIdx, x, y int) bool {
 
 func (c caches) isLessThan(imgIdx, vertexIdx, x, y int) bool {
 	return len(c) <= imgIdx || len(c[imgIdx]) <= vertexIdx || c[imgIdx][vertexIdx].x < x || (c[imgIdx][vertexIdx].x == x && c[imgIdx][vertexIdx].y < y)
+}
+
+func (c caches) isLessEqual(imgIdx, vertexIdx, x, y int) bool {
+	return len(c) <= imgIdx || len(c[imgIdx]) <= vertexIdx || c[imgIdx][vertexIdx].x < x || (c[imgIdx][vertexIdx].x == x && c[imgIdx][vertexIdx].y <= y)
+}
+
+func (c caches) FindLastLE(n, x, y int) int {
+	if len(c) <= n {
+		return -1
+	}
+	m := len(c[n])
+	return c.bSearchLastLessEqualInternally(n, 0, m-1, x, y)
+}
+
+func (c caches) bSearchLastLessEqualInternally(n, low, high, x, y int) int {
+	if low > high {
+		return -1
+	}
+
+	if c.isLessEqual(n, high, x, y) {
+		return high
+	}
+
+	mid := low + ((high - low) >> 1)
+	if c.isGreatThan(n, mid, x, y) {
+		return c.bSearchLastLessEqualInternally(n, low, mid-1, x, y)
+	} else {
+		return c.bSearchLastLessEqualInternally(n, mid, high-1, x, y)
+	}
+
 }
