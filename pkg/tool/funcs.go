@@ -265,18 +265,18 @@ func releaseCubeInternally(imgIdx, srcIdx, step int) bool {
 	if canConnect(v, v2) {
 		time.Sleep(delay / 2)
 		fmt.Printf("(%d, %d)与(%d, %d)可消除\n", v.x, v.y, v2.x, v2.y)
-		//c1 := WindowClick(int32(MarginLeft+v.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v.y*cubeHeight+cubeHeight>>1))
+		c1 := WindowClick(int32(MarginLeft+v.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v.y*cubeHeight+cubeHeight>>1))
 		//fmt.Println("消除", x, y)
 		time.Sleep(delay + time.Duration(v.Dis(v2))*10)
-		//c2 := WindowClick(int32(MarginLeft+v2.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v2.y*cubeHeight+cubeHeight>>1))
-		//if c1 && c2 {
-		cubeList[v.x][v.y] = -1
-		cubeCaches.Del(imgIdx, v.x, v.y)
-		cubeList[v2.x][v2.y] = -1
-		cubeCaches.Del(imgIdx, v2.x, v2.y)
-		fmt.Printf("(%d, %d)与(%d, %d)已消除\n", v.x, v.y, v2.x, v2.y)
-		return true
-		//}
+		c2 := WindowClick(int32(MarginLeft+v2.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v2.y*cubeHeight+cubeHeight>>1))
+		if c1 && c2 {
+			cubeList[v.x][v.y] = -1
+			cubeCaches.Del(imgIdx, v.x, v.y)
+			cubeList[v2.x][v2.y] = -1
+			cubeCaches.Del(imgIdx, v2.x, v2.y)
+			fmt.Printf("(%d, %d)与(%d, %d)已消除\n", v.x, v.y, v2.x, v2.y)
+			return true
+		}
 	}
 	if step < 0 {
 		step--

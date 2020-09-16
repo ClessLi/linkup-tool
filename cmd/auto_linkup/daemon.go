@@ -15,6 +15,7 @@ func start() {
 			canRunning = !canRunning
 			tool.IsStopped = !tool.IsStopped
 			isPaused = false
+			tool.IsPaused = false
 		}
 		time.Sleep(time.Millisecond * 5)
 	}
