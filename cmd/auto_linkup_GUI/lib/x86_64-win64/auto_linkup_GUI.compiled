@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="F:\lazarus\fpc\3.2.0\bin\x86_64-win64\fpc.exe" Date="1357350767"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq -FiF:\Code_Path\src\linkup-tool\cmd\auto_linkup_GUI\lib\x86_64-win64 -FuF:\lazarus\lcl\units\x86_64-win64\win32 -FuF:\lazarus\lcl\units\x86_64-win64 -FuF:\lazarus\components\lazutils\lib\x86_64-win64 -FuF:\lazarus\packager\units\x86_64-win64 -FuF:\Code_Path\src\linkup-tool\cmd\auto_linkup_GUI\ -FUF:\Code_Path\src\linkup-tool\cmd\auto_linkup_GUI\lib\x86_64-win64\ -FEF:\Code_Path\src\linkup-tool\cmd\auto_linkup_GUI\ -oF:\Code_Path\src\linkup-tool\cmd\auto_linkup_GUI\auto_linkup_GUI.exe -dLCL -dLCLwin32 auto_linkup_GUI.lpr"/>
+</CONFIG>

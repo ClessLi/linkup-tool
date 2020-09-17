@@ -1,0 +1,33 @@
+object AutoLinkupGUI: TAutoLinkupGUI
+  Left = 321
+  Height = 209
+  Top = 152
+  Width = 410
+  Caption = 'QQ连连看辅助工具'
+  ClientHeight = 209
+  ClientWidth = 410
+  DesignTimePPI = 120
+  LCLVersion = '2.0.10.0'
+  object ReleaseRateBar: TTrackBar
+    Left = 50
+    Height = 40
+    Top = 96
+    Width = 310
+    Frequency = 10
+    LineSize = 10
+    Max = 100
+    OnChange = ReleaseRateBarChange
+    PageSize = 10
+    Position = 60
+    ParentShowHint = False
+    TabOrder = 0
+  end
+  object ReleaseRateLabel: TLabel
+    Left = 50
+    Height = 20
+    Top = 68
+    Width = 60
+    Caption = '消除速率'
+    ParentColor = False
+  end
+end

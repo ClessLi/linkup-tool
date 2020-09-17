@@ -26,7 +26,7 @@ var (
 	delay = 300 * time.Millisecond
 	// 延时倍数
 	// 射手 1 神眼 60
-	releaseRate time.Duration = 60
+	ReleaseRate time.Duration = 60
 	delayTotal  time.Duration
 	matchedIMGs []*goimagehash.ImageHash
 	cubeCaches  caches

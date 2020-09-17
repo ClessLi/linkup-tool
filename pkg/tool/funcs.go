@@ -273,7 +273,7 @@ func releaseCubeInternally(imgIdx, srcIdx, step int) bool {
 	v := cubeCaches[imgIdx][srcIdx]
 	v2 := cubeCaches[imgIdx][srcIdx+step]
 	if canConnect(v, v2) {
-		delayTotal = time.Millisecond * (100 - releaseRate)
+		delayTotal = time.Millisecond * (100 - ReleaseRate)
 		time.Sleep(delay / 2)
 		fmt.Printf("(%d, %d)与(%d, %d)可消除\n", v.x, v.y, v2.x, v2.y)
 		c1 := WindowClick(int32(MarginLeft+v.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v.y*cubeHeight+cubeHeight>>1))
