@@ -89,6 +89,7 @@ func initCubes() {
 			cubeList[x][y] = -1
 		}
 	}
+	cubeCaches = caches{}
 }
 
 func parseCubeInternally(img *image.RGBA, x, y int) int {
@@ -245,6 +246,9 @@ func ReleaseCube() {
 //}
 
 func releaseCubeInternally(imgIdx, srcIdx, step int) bool {
+	if IsStopped {
+		return false
+	}
 	if step == 0 {
 		if !releaseCubeInternally(imgIdx, srcIdx, step-1) {
 			return releaseCubeInternally(imgIdx, srcIdx, step+1)
@@ -254,7 +258,13 @@ func releaseCubeInternally(imgIdx, srcIdx, step int) bool {
 	}
 
 	// 延时调控
-	time.Sleep(time.Microsecond * 20 * (100 - delayTime))
+	time.Sleep(delayTotal)
+	if delayTotal > 0 {
+		delayTotal -= time.Millisecond * 4
+		//delayTotal = delayTotal * 10 / 13
+	} else {
+		delayTotal = 0
+	}
 
 	if srcIdx+step < 0 || srcIdx+step >= len(cubeCaches[imgIdx]) {
 		return false
@@ -263,6 +273,7 @@ func releaseCubeInternally(imgIdx, srcIdx, step int) bool {
 	v := cubeCaches[imgIdx][srcIdx]
 	v2 := cubeCaches[imgIdx][srcIdx+step]
 	if canConnect(v, v2) {
+		delayTotal = time.Millisecond * (100 - releaseRate)
 		time.Sleep(delay / 2)
 		fmt.Printf("(%d, %d)与(%d, %d)可消除\n", v.x, v.y, v2.x, v2.y)
 		c1 := WindowClick(int32(MarginLeft+v.x*cubeWidth+cubeWidth>>1), int32(MarginHeight+v.y*cubeHeight+cubeHeight>>1))

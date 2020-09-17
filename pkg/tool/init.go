@@ -25,7 +25,9 @@ var (
 	// 延时参数
 	delay = 300 * time.Millisecond
 	// 延时倍数
-	delayTime   time.Duration = 45
+	// 射手 1 神眼 60
+	releaseRate time.Duration = 60
+	delayTotal  time.Duration
 	matchedIMGs []*goimagehash.ImageHash
 	cubeCaches  caches
 	Block       = func() *goimagehash.ImageHash {

@@ -15,6 +15,9 @@ func GetWindow(lpWindowName string) bool {
 	windowName, _ := syscall.UTF16PtrFromString(lpWindowName)
 
 	for i := 0; i < 10; i++ {
+		for IsPaused && !IsStopped {
+			time.Sleep(time.Millisecond * 300)
+		}
 		if IsStopped {
 			fmt.Println("搜索游戏窗口操作已终止！")
 			return false
@@ -81,6 +84,8 @@ func MouseLeftClick(delay int, x, y int32) bool {
 		return false
 	}
 
+	/*robotgo.MoveClick(int(x), int(y))
+	return true*/
 	rand.Seed(time.Now().UnixNano())
 	r := rand.Intn(100)
 
@@ -140,7 +145,7 @@ func MouseLeftClick(delay int, x, y int32) bool {
 
 func WindowClick(x, y int32) bool {
 	windowX, windowY := GetWindowPosition()
-	fmt.Println("当前窗口坐标", windowX, windowY)
+	//fmt.Println("当前窗口坐标", windowX, windowY)
 	if !TopWindow() {
 		return false
 	}
